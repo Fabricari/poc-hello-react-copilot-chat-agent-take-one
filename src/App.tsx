@@ -1,7 +1,55 @@
+import { useMemo } from 'react'
 import './App.css'
+
+const FONT_FAMILY = "Impact, Haettenschweiler, 'Arial Black', sans-serif"
+
+function measureCharWidth(char: string, fontSize: number): number {
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')
+
+  if (!context) {
+    return fontSize * 0.6
+  }
+
+  context.font = `${fontSize}px ${FONT_FAMILY}`
+
+  return context.measureText(char).width
+}
 
 function App() {
   const helloText: string = 'HELLO WORLD'
+  const fontSize = 122
+  const letterGap = 4
+
+  const letters = useMemo(() => {
+    const chars = Array.from(helloText)
+    const advances = chars.map((char) => measureCharWidth(char, fontSize) + letterGap)
+    const totalWidth = advances.reduce((width, advance) => width + advance, 0)
+
+    let cursor = -totalWidth / 2
+
+    return chars.flatMap((char, index) => {
+      const advance = advances[index]
+
+      if (char === ' ') {
+        cursor += advance
+        return []
+      }
+
+      const x = cursor + advance / 2
+      const initialRotation = Math.random() * 20 - 10
+      cursor += advance
+
+      return [
+        {
+          char,
+          key: `${char}-${index}`,
+          x,
+          initialRotation,
+        },
+      ]
+    })
+  }, [fontSize, helloText])
 
   return (
     <main className="hello-page" aria-labelledby="hello-world-title">
@@ -18,17 +66,23 @@ function App() {
           fill="#78CFA0"
         />
 
-        <text
-          x="450"
-          y="474"
-          textAnchor="middle"
-          fill="#FFFFFF"
-          fontFamily="Impact, Haettenschweiler, 'Arial Black', sans-serif"
-          fontSize="122"
-          letterSpacing="3"
-        >
-          {helloText}
-        </text>
+        <g transform="translate(450 474)">
+          {letters.map((letter) => (
+            <text
+              key={letter.key}
+              className="hello-letter"
+              x={letter.x}
+              y="0"
+              textAnchor="middle"
+              fill="#FFFFFF"
+              fontFamily={FONT_FAMILY}
+              fontSize={fontSize}
+              transform={`rotate(${letter.initialRotation} ${letter.x} 0)`}
+            >
+              {letter.char}
+            </text>
+          ))}
+        </g>
       </svg>
     </main>
   )
