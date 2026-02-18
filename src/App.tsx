@@ -103,15 +103,12 @@ function App() {
   }, [fontSize, helloText])
 
   return (
-    <main className="hello-page" aria-labelledby="hello-world-title">
+    <main className="hello-page">
       <svg
         className={`hello-logo${isPressed ? ' is-pressed' : ''}`}
         viewBox="0 0 900 800"
-        role="img"
-        aria-labelledby="hello-world-title"
+        aria-hidden="true"
       >
-        <title id="hello-world-title">{helloText}</title>
-
         <g className="hello-star-shell">
           <polygon
             className="hello-star"
