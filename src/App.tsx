@@ -1,7 +1,9 @@
-import { useMemo } from 'react'
+import { type CSSProperties, useMemo } from 'react'
 import './App.css'
 
 const FONT_FAMILY = "Impact, Haettenschweiler, 'Arial Black', sans-serif"
+const WOBBLE_DURATION_BASE_SECONDS = 0.5
+const WOBBLE_DURATION_VARIANCE_SECONDS = 0.2
 
 function measureCharWidth(char: string, fontSize: number): number {
   const canvas = document.createElement('canvas')
@@ -20,6 +22,8 @@ function App() {
   const helloText: string = 'HELLO WORLD'
   const fontSize = 122
   const letterGap = 4
+  const maxRotation = 10
+  const wobbleRange = 20
 
   const letters = useMemo(() => {
     const chars = Array.from(helloText)
@@ -37,7 +41,12 @@ function App() {
       }
 
       const x = cursor + advance / 2
-      const initialRotation = Math.random() * 20 - 10
+      const initialRotation = Math.random() * (maxRotation * 2) - maxRotation
+      const minRotation = Math.max(-maxRotation, initialRotation - wobbleRange)
+      const maxLetterRotation = Math.min(maxRotation, initialRotation + wobbleRange)
+      const wobbleDuration =
+        WOBBLE_DURATION_BASE_SECONDS + Math.random() * WOBBLE_DURATION_VARIANCE_SECONDS
+      const wobbleDelay = -Math.random() * wobbleDuration
       cursor += advance
 
       return [
@@ -45,7 +54,10 @@ function App() {
           char,
           key: `${char}-${index}`,
           x,
-          initialRotation,
+          minRotation,
+          maxRotation: maxLetterRotation,
+          wobbleDuration,
+          wobbleDelay,
         },
       ]
     })
@@ -77,7 +89,14 @@ function App() {
               fill="#FFFFFF"
               fontFamily={FONT_FAMILY}
               fontSize={fontSize}
-              transform={`rotate(${letter.initialRotation} ${letter.x} 0)`}
+              style={
+                {
+                  '--rot-min': `${letter.minRotation}deg`,
+                  '--rot-max': `${letter.maxRotation}deg`,
+                  animationDuration: `${letter.wobbleDuration}s`,
+                  animationDelay: `${letter.wobbleDelay}s`,
+                } as CSSProperties
+              }
             >
               {letter.char}
             </text>

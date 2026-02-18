@@ -11,3 +11,22 @@
   height: auto;
   display: block;
 }
+
+.hello-letter {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-name: letter-wobble;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes letter-wobble {
+  from {
+    transform: rotate(var(--rot-min));
+  }
+
+  to {
+    transform: rotate(var(--rot-max));
+  }
+}
