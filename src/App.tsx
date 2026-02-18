@@ -25,6 +25,7 @@ function App() {
   const maxRotation = 10
   const wobbleRange = 20
   const [isPressed, setIsPressed] = useState(false)
+  const [isVideoOpen, setIsVideoOpen] = useState(false)
 
   useEffect(() => {
     if (!isPressed) {
@@ -33,6 +34,7 @@ function App() {
 
     const handlePointerUp = () => {
       setIsPressed(false)
+      setIsVideoOpen(true)
     }
 
     window.addEventListener('pointerup', handlePointerUp)
@@ -43,6 +45,24 @@ function App() {
       window.removeEventListener('pointercancel', handlePointerUp)
     }
   }, [isPressed])
+
+  useEffect(() => {
+    if (!isVideoOpen) {
+      return
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsVideoOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleEscape)
+
+    return () => {
+      window.removeEventListener('keydown', handleEscape)
+    }
+  }, [isVideoOpen])
 
   const letters = useMemo(() => {
     const chars = Array.from(helloText)
@@ -134,6 +154,38 @@ function App() {
           onPointerDown={() => setIsPressed(true)}
         />
       </svg>
+
+      {isVideoOpen ? (
+        <div
+          className="video-modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-label="YouTube video"
+          onClick={() => setIsVideoOpen(false)}
+        >
+          <div className="video-modal-content" onClick={(event) => event.stopPropagation()}>
+            <button
+              className="video-modal-close"
+              type="button"
+              aria-label="Close video"
+              onClick={() => setIsVideoOpen(false)}
+            >
+              ×
+            </button>
+
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/mHONNcZbwDY?si=JHS5_THr9NwfH5ac"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      ) : null}
     </main>
   )
 }
