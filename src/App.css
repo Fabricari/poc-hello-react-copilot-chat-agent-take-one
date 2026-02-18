@@ -12,6 +12,12 @@
   display: block;
 }
 
+.hello-star {
+  transform-box: view-box;
+  transform-origin: 450px 380px;
+  animation: star-rotate 28s linear infinite;
+}
+
 .hello-letter {
   transform-box: fill-box;
   transform-origin: center;
@@ -28,5 +34,15 @@
 
   to {
     transform: rotate(var(--rot-max));
+  }
+}
+
+@keyframes star-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
   }
 }

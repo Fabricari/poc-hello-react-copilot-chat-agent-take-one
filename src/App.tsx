@@ -74,6 +74,7 @@ function App() {
         <title id="hello-world-title">{helloText}</title>
 
         <polygon
+          className="hello-star"
           points="450,96 540,283 747,310 597,456 633,663 450,564 267,663 303,456 153,310 360,283"
           fill="#78CFA0"
         />
