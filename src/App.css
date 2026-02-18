@@ -1,0 +1,13 @@
+.hello-page {
+  min-height: 100vh;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  background: #D791C0;
+}
+
+.hello-logo {
+  width: min(92vw, 900px);
+  height: auto;
+  display: block;
+}
