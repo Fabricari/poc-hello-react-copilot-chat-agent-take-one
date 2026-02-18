@@ -12,10 +12,30 @@
   display: block;
 }
 
+.hello-lockup-hitarea {
+  fill: transparent;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.hello-star-shell {
+  transform-box: view-box;
+  transform-origin: 450px 380px;
+  transition: transform 180ms ease-out;
+}
+
+.hello-logo.is-pressed .hello-star-shell {
+  transform: scale(0.75);
+}
+
 .hello-star {
   transform-box: view-box;
   transform-origin: 450px 380px;
   animation: star-rotate 28s linear infinite;
+}
+
+.hello-logo.is-pressed .hello-star {
+  animation-play-state: paused;
 }
 
 .hello-letter {

@@ -1,4 +1,4 @@
-import { type CSSProperties, useMemo } from 'react'
+import { type CSSProperties, useEffect, useMemo, useState } from 'react'
 import './App.css'
 
 const FONT_FAMILY = "Impact, Haettenschweiler, 'Arial Black', sans-serif"
@@ -24,6 +24,25 @@ function App() {
   const letterGap = 4
   const maxRotation = 10
   const wobbleRange = 20
+  const [isPressed, setIsPressed] = useState(false)
+
+  useEffect(() => {
+    if (!isPressed) {
+      return
+    }
+
+    const handlePointerUp = () => {
+      setIsPressed(false)
+    }
+
+    window.addEventListener('pointerup', handlePointerUp)
+    window.addEventListener('pointercancel', handlePointerUp)
+
+    return () => {
+      window.removeEventListener('pointerup', handlePointerUp)
+      window.removeEventListener('pointercancel', handlePointerUp)
+    }
+  }, [isPressed])
 
   const letters = useMemo(() => {
     const chars = Array.from(helloText)
@@ -66,18 +85,20 @@ function App() {
   return (
     <main className="hello-page" aria-labelledby="hello-world-title">
       <svg
-        className="hello-logo"
+        className={`hello-logo${isPressed ? ' is-pressed' : ''}`}
         viewBox="0 0 900 800"
         role="img"
         aria-labelledby="hello-world-title"
       >
         <title id="hello-world-title">{helloText}</title>
 
-        <polygon
-          className="hello-star"
-          points="450,96 540,283 747,310 597,456 633,663 450,564 267,663 303,456 153,310 360,283"
-          fill="#78CFA0"
-        />
+        <g className="hello-star-shell">
+          <polygon
+            className="hello-star"
+            points="450,96 540,283 747,310 597,456 633,663 450,564 267,663 303,456 153,310 360,283"
+            fill="#78CFA0"
+          />
+        </g>
 
         <g transform="translate(450 474)">
           {letters.map((letter) => (
@@ -103,6 +124,15 @@ function App() {
             </text>
           ))}
         </g>
+
+        <rect
+          className="hello-lockup-hitarea"
+          x="120"
+          y="80"
+          width="660"
+          height="600"
+          onPointerDown={() => setIsPressed(true)}
+        />
       </svg>
     </main>
   )
